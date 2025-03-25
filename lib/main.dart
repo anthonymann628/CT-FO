@@ -1,4 +1,3 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,10 +15,10 @@ import 'screens/tools_screen.dart';
 import 'screens/camera_screen.dart';
 import 'screens/signature_screen.dart';
 import 'screens/barcode_scanner_screen.dart';
-// We do NOT import photo_confirm_screen.dart with route usage, because it needs dynamic imagePath
-
 // Services
 import 'services/app_state.dart';
+import 'services/route_service.dart';
+import 'services/delivery_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +26,9 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AppState()),
-        // Add any other services you want to provide
+        ChangeNotifierProvider(create: (_) => RouteService()),
+        ChangeNotifierProvider(create: (_) => DeliveryService()),
+        // Add any other services to provide if needed
       ],
       child: const CarrierTrackApp(),
     ),

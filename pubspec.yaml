@@ -16,14 +16,10 @@ dependencies:
   # State management
   provider: ^6.0.5
 
-  # Camera plugin (for camera usage, if you still use camera.dart or partial)
+  # Camera plugin
   camera: ^0.11.1
 
-  # Barcode/QR scanning
-  # (mobile_scanner ^6.0.7 is the newer version with onDetect: (barcode, args) signature,
-  # but in the code we posted, we used older (BarcodeCapture) approach. If you want to keep
-  # the older approach, use an older version, e.g. ^2 or ^3. If you're on ^6.0.7, ensure
-  # the code references the new callback. Otherwise, you can keep it if your code works.)
+  # Barcode/QR scanning (v6.0.7 uses 'detectDuplicates' not 'allowDuplicates')
   mobile_scanner: ^6.0.7
 
   # Signatures
@@ -46,16 +42,15 @@ dependencies:
   # Logging
   logger: ^2.5.0
 
-  # Workmanager (optional, but included in your list)
+  # Workmanager (optional)
   workmanager: ^0.5.2
 
-  # Shared preferences for token storage, etc.
+  # Shared preferences
   shared_preferences: ^2.0.15
 
   # Battery plugin (if you still have battery logic)
   battery_plus: ^6.2.1
 
-  # ------------------ NEW PACKAGES BELOW ---------------------
   # For picking images (photo_service.dart uses image_picker)
   image_picker: ^1.1.2
 
@@ -64,7 +59,6 @@ dependencies:
 
   # For launching maps (openMap in location_service.dart)
   url_launcher: ^6.1.10
-  # ------------------------------------------------------------
 
 dev_dependencies:
   flutter_test:

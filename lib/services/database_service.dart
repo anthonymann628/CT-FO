@@ -1,8 +1,8 @@
+// lib/services/database_service.dart
 import 'dart:async';
-import 'dart:io';
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import '../models/app_state.dart';
+import 'package:path/path.dart';
+import '../models/stop.dart';
 import '../models/barcode_scan.dart';
 import '../models/photo.dart';
 import '../models/signature.dart';
@@ -86,30 +86,44 @@ class DatabaseService {
     final stopMaps = await db.query('stops');
     List<Stop> stops = stopMaps.map((m) => Stop.fromMap(m)).toList();
     if (stops.isEmpty) return [];
+
     // Fetch related data and attach to stops
     final scanMaps = await db.query('barcode_scans');
     final photoMaps = await db.query('photos');
     final signatureMaps = await db.query('signatures');
+
     // Index stops by id for quick lookup
     final stopById = { for (var s in stops) s.id: s };
+
+    // Attach barcode scans
     for (var m in scanMaps) {
       BarcodeScan scan = BarcodeScan.fromMap(m);
-      if (scan.stopId != null && stopById.containsKey(scan.stopId)) {
-        stopById[scan.stopId]!.scans.add(scan);
+      String? sid = m['stopId']?.toString();
+      if (sid != null && stopById.containsKey(sid)) {
+        // Add the code to the stop's barcode list
+        stopById[sid]!.barcodes.add(scan.code);
       }
     }
+    // Attach photos
     for (var m in photoMaps) {
       Photo photo = Photo.fromMap(m);
-      if (photo.stopId != null && stopById.containsKey(photo.stopId)) {
-        stopById[photo.stopId]!.photos.add(photo);
+      String? sid = m['stopId']?.toString();
+      if (sid != null && stopById.containsKey(sid)) {
+        // If multiple photos, we take the latest one for photoPath (or extend model to list if needed)
+        stopById[sid]!.photoPath = photo.filePath;
+        // (If needed, you could maintain a list of photos; but our Stop uses single photoPath for simplicity)
       }
     }
+    // Attach signatures
     for (var m in signatureMaps) {
       Signature sig = Signature.fromMap(m);
-      if (sig.stopId != null && stopById.containsKey(sig.stopId)) {
-        stopById[sig.stopId]!.signature = sig;
+      String? sid = m['stopId']?.toString();
+      if (sid != null && stopById.containsKey(sid)) {
+        stopById[sid]!.signaturePath = sig.filePath;
+        // (We don't store signerName in Stop, but could if needed)
       }
     }
+
     return stops;
   }
 
@@ -133,14 +147,14 @@ class DatabaseService {
     await db.update(
       'stops',
       {
-        'delivered': 1,
-        'deliveredAt': stop.deliveredAt?.toIso8601String(),
+        'delivered': stop.completed ? 1 : 0,
+        'deliveredAt': stop.completedAt?.toIso8601String(),
         'latitude': stop.latitude,
         'longitude': stop.longitude,
-        'synced': stop.synced ? 1 : 0,
+        'synced': stop.uploaded ? 1 : 0,
       },
       where: 'id = ?',
-      whereArgs: [stop.id],
+      whereArgs: [int.tryParse(stop.id) ?? stop.id],
     );
   }
 }
