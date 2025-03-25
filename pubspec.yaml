@@ -1,0 +1,77 @@
+name: carriertrack_flutter
+description: A cross-platform CarrierTrack app
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Networking
+  http: ^1.3.0
+
+  # State management
+  provider: ^6.0.5
+
+  # Camera plugin (for camera usage, if you still use camera.dart or partial)
+  camera: ^0.11.1
+
+  # Barcode/QR scanning
+  # (mobile_scanner ^6.0.7 is the newer version with onDetect: (barcode, args) signature,
+  # but in the code we posted, we used older (BarcodeCapture) approach. If you want to keep
+  # the older approach, use an older version, e.g. ^2 or ^3. If you're on ^6.0.7, ensure
+  # the code references the new callback. Otherwise, you can keep it if your code works.)
+  mobile_scanner: ^6.0.7
+
+  # Signatures
+  signature: ^6.0.0
+
+  # SQLite + local file paths
+  sqflite: ^2.2.5
+  path: ^1.8.3
+  path_provider: ^2.0.12
+
+  # Location plugin
+  geolocator: ^13.0.3
+
+  # Permissions
+  permission_handler: ^11.4.0
+
+  # Connectivity
+  connectivity_plus: ^6.1.3
+
+  # Logging
+  logger: ^2.5.0
+
+  # Workmanager (optional, but included in your list)
+  workmanager: ^0.5.2
+
+  # Shared preferences for token storage, etc.
+  shared_preferences: ^2.0.15
+
+  # Battery plugin (if you still have battery logic)
+  battery_plus: ^6.2.1
+
+  # ------------------ NEW PACKAGES BELOW ---------------------
+  # For picking images (photo_service.dart uses image_picker)
+  image_picker: ^1.1.2
+
+  # For date/time formatting in formatters.dart
+  intl: ^0.20.2
+
+  # For launching maps (openMap in location_service.dart)
+  url_launcher: ^6.1.10
+  # ------------------------------------------------------------
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  # assets:
+  #   - assets/images/
