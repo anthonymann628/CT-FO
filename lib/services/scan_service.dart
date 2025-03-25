@@ -1,3 +1,4 @@
+// lib/services/scan_service.dart
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../models/barcode_scan.dart';
@@ -7,9 +8,9 @@ import '../utils/permissions.dart';
 
 class ScanService {
   static Future<BarcodeScan?> scanBarcode() async {
-    bool granted = await Permissions.ensureCameraPermission();
+    final granted = await Permissions.ensureCameraPermission();
     if (!granted) return null;
-    // Open scanner page and wait for result
+    // Open scanner page and wait for a result from _BarcodeScannerPage
     return await NavigationService.navigatorKey.currentState?.push(
       MaterialPageRoute(builder: (_) => _BarcodeScannerPage()),
     );
@@ -39,6 +40,28 @@ class _BarcodeScannerPageState extends State<_BarcodeScannerPage> {
     super.dispose();
   }
 
+  /// The function signature must match `void Function(BarcodeCapture capture)?`
+  void _onDetect(BarcodeCapture capture) {
+    if (_scanned) return;
+
+    final barcodes = capture.barcodes;
+    if (barcodes.isNotEmpty) {
+      _scanned = true;
+
+      // Grab the first recognized barcode
+      final code = barcodes.first.rawValue;
+      final format = barcodes.first.format; // an enum, can do .name or .toString()
+      if (code != null) {
+        // Create a BarcodeScan model. Adjust 'type' if needed
+        final result = BarcodeScan(code: code, type: format.toString());
+        Navigator.of(context).pop(result);
+      } else {
+        // If first.rawValue is null, allow scanning again
+        setState(() => _scanned = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +71,7 @@ class _BarcodeScannerPageState extends State<_BarcodeScannerPage> {
           IconButton(
             icon: Icon(_flashOn ? Icons.flash_on : Icons.flash_off),
             onPressed: _toggleFlash,
-          )
+          ),
         ],
         leading: IconButton(
           icon: const Icon(Icons.close),
@@ -60,18 +83,9 @@ class _BarcodeScannerPageState extends State<_BarcodeScannerPage> {
           MobileScanner(
             controller: _controller,
             fit: BoxFit.cover,
-            onDetect: (barcode, args) {
-              if (_scanned) return;
-              final String? value = barcode.rawValue;
-              if (value != null) {
-                _scanned = true;
-                final type = barcode.format.toString();
-                final result = BarcodeScan(code: value, type: type);
-                Navigator.of(context).pop(result);
-              }
-            },
+            onDetect: _onDetect, // single-argument callback
           ),
-          Center(child: BarcodeScannerViewfinder()),
+          const Center(child: BarcodeScannerViewfinder()),
         ],
       ),
     );

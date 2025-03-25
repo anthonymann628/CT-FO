@@ -1,10 +1,13 @@
+// lib/widgets/stop_list_item.dart
+
 import 'package:flutter/material.dart';
-import '../models/app_state.dart';
+import '../models/stop.dart';
 
 class StopListItem extends StatelessWidget {
   final Stop stop;
   final VoidCallback? onTap;
   final VoidCallback? onNavigate;
+
   const StopListItem({
     Key? key,
     required this.stop,
@@ -19,7 +22,7 @@ class StopListItem extends StatelessWidget {
       child: ListTile(
         title: Text(stop.name),
         subtitle: Text(stop.address),
-        trailing: stop.delivered
+        trailing: stop.completed
             ? const Icon(Icons.check_circle, color: Colors.green)
             : Row(
                 mainAxisSize: MainAxisSize.min,
