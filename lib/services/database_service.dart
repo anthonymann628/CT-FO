@@ -10,6 +10,11 @@ import '../utils/constants.dart';
 
 class DatabaseService {
   static Database? _db;
+  
+  static Future<void> executeRawSql(String sql) async {
+  final db = await _getDatabase();
+  await db.execute(sql);
+  }
 
   static Future<Database> _getDatabase() async {
     if (_db != null) return _db!;

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:battery_plus/battery_plus.dart'; // optional if you want battery
 
 class DeviceStatusScreen extends StatefulWidget {
   static const routeName = '/deviceStatus';
@@ -23,7 +22,6 @@ class _DeviceStatusScreenState extends State<DeviceStatusScreen> {
     super.initState();
     _checkConnectivity();
     _checkLocation();
-    _checkBattery();
   }
 
   Future<void> _checkConnectivity() async {
@@ -54,13 +52,6 @@ class _DeviceStatusScreenState extends State<DeviceStatusScreen> {
     // If permission granted
     final pos = await Geolocator.getCurrentPosition();
     setState(() => _locationStatus = 'Lat: ${pos.latitude}, Lng: ${pos.longitude}');
-  }
-
-  Future<void> _checkBattery() async {
-    // If using battery_plus
-    final battery = Battery();
-    final level = await battery.batteryLevel;
-    setState(() => _batteryStatus = '$level%');
   }
 
   @override

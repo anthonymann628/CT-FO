@@ -48,9 +48,6 @@ dependencies:
   # Shared preferences
   shared_preferences: ^2.0.15
 
-  # Battery plugin (if you still have battery logic)
-  battery_plus: ^6.2.1
-
   # For picking images (photo_service.dart uses image_picker)
   image_picker: ^1.1.2
 
@@ -67,5 +64,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  # assets:
-  #   - assets/images/
+  assets:
+    - ../assets/demoRoutes/demo_data.txt
